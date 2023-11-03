@@ -11,7 +11,6 @@ typedef enum {
 char tokenString[MAXTOKENLEN + 1];
 
 // length of the input buffer for source code lines
-
 #define BUFLEN 256
 
 static char lineBuf[BUFLEN];  // holds the current line
