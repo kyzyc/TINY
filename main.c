@@ -17,13 +17,13 @@
 #include "cgen.h"
 #endif
 
-int lineno = 0;
+size_t lineno = 0;
 FILE* source;
 FILE* listing;
 FILE* code;
 
-int EchoSource = true;
-int TraceScan = true;
+bool EchoSource = true;
+bool TraceScan = true;
 
 // int Error = false;
 

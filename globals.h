@@ -25,7 +25,7 @@ extern FILE* source;   // source code text file
 extern FILE* listing;  // listing output text file
 extern FILE* code;     // code text file for TM simulator
 
-extern int lineno;     // source line number for listing
+extern size_t lineno;     // source line number for listing
 
 /*******************************************************************/
 /***************** Syntax tree for parsing *************************/
@@ -63,12 +63,12 @@ extern int lineno;     // source line number for listing
 
 /* EchoSource = true, causes the source program to be echoed
    to the listing file with line numbers during parsing */
-extern int EchoSource;
+extern bool EchoSource;
 
 /* TraceScan = true, causes token information to be printed
    to the listing file as each token is recognized by the
    scanner */
-extern int TraceScan;
+extern bool TraceScan;
 
 /* // Error = true, prevents further passes if an error occurs */
 /* extern int Error; */

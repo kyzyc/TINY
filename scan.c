@@ -14,8 +14,8 @@ char tokenString[MAXTOKENLEN + 1];
 #define BUFLEN 256
 
 static char lineBuf[BUFLEN];  // holds the current line
-static int linepos = 0;       // current position in LineBuf
-static int bufsize = 0;       // current size of buffer string
+static size_t linepos = 0;       // current position in LineBuf
+static size_t bufsize = 0;       // current size of buffer string
 
 /* getNextChar fetches the next non-blank character
    from lineBuf, reading in a new line if lineBuf is exhausted */
@@ -52,7 +52,7 @@ static struct {
 
 // loopup an identifier to see if it is a reserved word, uses linear search
 static TokenType reservedLookup(char* s) {
-    int i;
+    size_t i;
     for (i = 0; i < MAXRESERVED; ++i) {
         // equal
         if (!strcmp(s, reservedWords[i].str)) {
@@ -69,10 +69,10 @@ static TokenType reservedLookup(char* s) {
 /*******************************************************************/
 
 TokenType getToken() {
-    int tokenStringIndex = 0;  // index for storing into tokenString
+    size_t tokenStringIndex = 0;  // index for storing into tokenString
     TokenType currentToken;    // holds current token to be returned
     StateType state = START;   // current state - always begins at start
-    int save;                  // flag to indicate save to tokenString
+    bool save;                  // flag to indicate save to tokenString
 
     while (state != DONE) {
         char c = getNextChar();
