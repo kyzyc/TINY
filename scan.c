@@ -130,6 +130,7 @@ TokenType getToken() {
                             break;
                     }
                 }
+                break;
             case INCOMMENT:
                 save = false;
                 if (c == '}') {
@@ -178,10 +179,10 @@ TokenType getToken() {
                 currentToken = reservedLookup(tokenString);
             }
         }
-        if (TraceScan) {
-            fprintf(listing, "\t %d: ", lineno);
-            printToken(currentToken, tokenString);
-        }
+    }
+    if (TraceScan) {
+        fprintf(listing, "\t %d: ", lineno);
+        printToken(currentToken, tokenString);
     }
     return currentToken;
 }
