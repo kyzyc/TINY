@@ -220,5 +220,3 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
-// int for 
-/*while int for if else */
