@@ -14,8 +14,8 @@ char tokenString[MAXTOKENLEN + 1];
 #define BUFLEN 256
 
 static char lineBuf[BUFLEN];  // holds the current line
-static size_t linepos = 0;       // current position in LineBuf
-static size_t bufsize = 0;       // current size of buffer string
+static size_t linepos = 0;    // current position in LineBuf
+static size_t bufsize = 0;    // current size of buffer string
 
 /* getNextChar fetches the next non-blank character
    from lineBuf, reading in a new line if lineBuf is exhausted */
@@ -24,7 +24,7 @@ static char getNextChar(void) {
         lineno++;
         if (fgets(lineBuf, BUFLEN - 1, source)) {
             if (EchoSource) {
-                fprintf(listing, "%4d: %s", lineno, lineBuf);
+                fprintf(listing, "%4zu: %s", lineno, lineBuf);
             }
             bufsize = strlen(lineBuf);
             linepos = 0;
@@ -70,9 +70,9 @@ static TokenType reservedLookup(char* s) {
 
 TokenType getToken() {
     size_t tokenStringIndex = 0;  // index for storing into tokenString
-    TokenType currentToken;    // holds current token to be returned
-    StateType state = START;   // current state - always begins at start
-    bool save;                  // flag to indicate save to tokenString
+    TokenType currentToken;       // holds current token to be returned
+    StateType state = START;      // current state - always begins at start
+    bool save;                    // flag to indicate save to tokenString
 
     while (state != DONE) {
         char c = getNextChar();
@@ -180,9 +180,8 @@ TokenType getToken() {
         }
     }
     if (TraceScan) {
-        fprintf(listing, "\t %d: ", lineno);
+        fprintf(listing, "\t %zu: ", lineno);
         printToken(currentToken, tokenString);
     }
     return currentToken;
 }
-
