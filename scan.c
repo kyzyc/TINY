@@ -14,6 +14,13 @@ char tokenString[MAXTOKENLEN + 1];
 // length of the input buffer for source code lines
 #define BUFLEN 256
 
+#define TOTAL_KEYWORDS 8
+#define MIN_WORD_LENGTH 2
+#define MAX_WORD_LENGTH 6
+#define MIN_HASH_VALUE 2
+#define MAX_HASH_VALUE 14
+/* maximum key range = 13, duplicates = 0 */
+
 static char lineBuf[BUFLEN];  // holds the current line
 static size_t linepos = 0;    // current position in LineBuf
 static size_t bufsize = 0;    // current size of buffer string
@@ -44,32 +51,103 @@ static void ungetNextChar(void)
     linepos--;
 }
 
+static unsigned int
+hash (register const char *str, register size_t len)
+{
+  static const unsigned char asso_values[] =
+    {
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15,  5, 15, 15, 15,  0, 15, 15, 15, 15,
+      15, 15, 15, 15,  0, 15, 10,  5, 15,  0,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+      15, 15, 15, 15, 15, 15
+    };
+  return len + asso_values[(unsigned char)str[0]];
+}
+
 // lookup table of reserved words
+// static struct {
+//     char* str;
+//     TokenType tok;
+// } reservedWords[MAXRESERVED] = {{"else", ELSE},     {"end", END},   {"if", IF},       {"read", READ},
+//                                 {"repeat", REPEAT}, {"then", THEN}, {"until", UNTIL}, {"write", WRITE}};
 static struct {
     char* str;
     TokenType tok;
-} reservedWords[MAXRESERVED] = {{"else", ELSE},     {"end", END},   {"if", IF},       {"read", READ},
-                                {"repeat", REPEAT}, {"then", THEN}, {"until", UNTIL}, {"write", WRITE}};
+} reservedWords[] = {{""},
+                     {""},
+                     {"if", IF},
+                     {""},
+                     {"read", READ},
+                     {"write", WRITE},
+                     {"repeat", REPEAT},
+                     {""},
+                     {"end", END},
+                     {"else", ELSE},
+                     {"until", UNTIL},
+                     {""},
+                     {""},
+                     {""},
+                     {"then", THEN}};
 
-// loopup an identifier to see if it is a reserved word, uses linear search
-static TokenType reservedLookup(char* s) {
-    size_t lo, hi, mid;
-    lo = 0;
-    hi = MAXRESERVED - 1;
-    while (lo <= hi) {
-        mid = lo + ((hi - lo) >> 1);
-        int result = strcmp(s, reservedWords[mid].str);
-        if (!result) {
-            return reservedWords[mid].tok;
-        } else if (result > 0){
-            lo = mid + 1;
-        } else {
-            hi = mid - 1;
+
+static TokenType reservedLookup(char *str, size_t len)
+{
+  if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
+    {
+      unsigned int key = hash(str, len);
+
+      if (key <= MAX_HASH_VALUE)
+        {
+          char *s = reservedWords[key].str;
+
+          if (*str == *s && !strcmp (str + 1, s + 1))
+            return reservedWords[key].tok;
         }
     }
-
     return ID;
 }
+
+// loopup an identifier to see if it is a reserved word, uses linear search
+// static TokenType reservedLookup(char* s) {
+//     size_t lo, hi, mid;
+//     lo = 0;
+//     hi = MAXRESERVED - 1;
+//     while (lo <= hi) {
+//         mid = lo + ((hi - lo) >> 1);
+//         int result = strcmp(s, reservedWords[mid].str);
+//         if (!result) {
+//             return reservedWords[mid].tok;
+//         } else if (result > 0){
+//             lo = mid + 1;
+//         } else {
+//             hi = mid - 1;
+//         }
+//     }
+//
+//     return ID;
+// }
 
 
 /*******************************************************************/
@@ -183,7 +261,7 @@ TokenType getToken() {
         if (state == DONE) {
             tokenString[tokenStringIndex] = '\0';
             if (currentToken == ID) {
-                currentToken = reservedLookup(tokenString);
+                currentToken = reservedLookup(tokenString, tokenStringIndex);
             }
         }
     }
