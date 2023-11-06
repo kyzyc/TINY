@@ -1,5 +1,4 @@
 #include "scan.h"
-#include <string.h>
 #include "globals.h"
 #include "util.h"
 
@@ -9,7 +8,10 @@ typedef enum {
 } StateType;
 
 // lexeme of identifier or reserved word
-char tokenString[MAXTOKENLEN + 1];
+struct TokenString {
+    char* str;
+    size_t len;
+} tokenString = {NULL, 0};
 
 // length of the input buffer for source code lines
 #define BUFLEN 256
@@ -149,6 +151,14 @@ static TokenType reservedLookup(char *str, size_t len)
 //     return ID;
 // }
 
+bool initialTokenString() {
+    if ((tokenString.str = malloc(sizeof(char) * (INITIALSIZE + 1))) == NULL) {
+        return false;
+    }
+    tokenString.len = INITIALSIZE;
+    return true;
+}
+
 
 /*******************************************************************/
 /************ the primary function of the scanner ******************/
@@ -255,19 +265,30 @@ TokenType getToken() {
                 currentToken = ERROR;
                 break;
         }
-        if ((save) && (tokenStringIndex <= MAXTOKENLEN)) {
-            tokenString[tokenStringIndex++] = c;
+        if ((save) && (tokenStringIndex < tokenString.len)) {
+            tokenString.str[tokenStringIndex++] = c;
+        } else if ((save) && (tokenStringIndex == tokenString.len)) {
+            printf("realloc! %zu\n", tokenString.len);
+            if (realloc(tokenString.str, (tokenString.len * 1.5)) == NULL) {
+                if (errno == ENOMEM) {
+                    fprintf(stderr, "out of memory!\n");
+                    exit(EXIT_FAILURE);
+                }
+            }
+            tokenString.len *= 1.5;
+            printf("realloc! %zu\n", tokenString.len);
+            tokenString.str[tokenStringIndex++] = c;
         }
         if (state == DONE) {
-            tokenString[tokenStringIndex] = '\0';
+            tokenString.str[tokenStringIndex] = '\0';
             if (currentToken == ID) {
-                currentToken = reservedLookup(tokenString, tokenStringIndex);
+                currentToken = reservedLookup(tokenString.str, tokenStringIndex);
             }
         }
     }
     if (TraceScan) {
         fprintf(listing, "\t %zu: ", lineno);
-        printToken(currentToken, tokenString);
+        printToken(currentToken, tokenString.str);
     }
     return currentToken;
 }

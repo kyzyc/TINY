@@ -3,11 +3,13 @@
 
 #include "globals.h"
 
-// maxinum size of a token
-#define MAXTOKENLEN 40
+#define INITIALSIZE 8
 
 // store the lexeme of each token (string value of token)
-extern char tokenString[MAXTOKENLEN + 1];
+extern struct TokenString tokenString;
+
+// initialize tokenString
+bool initialTokenString();
 
 // return the next token in source file
 TokenType getToken();

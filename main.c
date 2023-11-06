@@ -45,6 +45,10 @@ int main(int argc, char *argv[])
     }
     listing = stdout;  // send listing to screen
     fprintf(listing, "\nTINY COMPILATION: %s\n", pgm);
+    if (!initialTokenString()) {
+        fprintf(stderr, "initial tokenString failed\n");
+        exit(1);
+    }
 #if NO_PARSE
     while (getToken() != ENDFILE)
         ;

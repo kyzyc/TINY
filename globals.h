@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+#include <errno.h>
 
 // MAXRESERVED = the number of reserved words
 #define MAXRESERVED 8
