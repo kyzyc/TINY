@@ -1,4 +1,5 @@
 #include "scan.h"
+#include <string.h>
 #include "globals.h"
 #include "util.h"
 
@@ -47,16 +48,23 @@ static void ungetNextChar(void)
 static struct {
     char* str;
     TokenType tok;
-} reservedWords[MAXRESERVED] = {{"if", IF},         {"then", THEN},   {"else", ELSE}, {"end", END},
-                                {"repeat", REPEAT}, {"until", UNTIL}, {"read", READ}, {"write", WRITE}};
+} reservedWords[MAXRESERVED] = {{"else", ELSE},     {"end", END},   {"if", IF},       {"read", READ},
+                                {"repeat", REPEAT}, {"then", THEN}, {"until", UNTIL}, {"write", WRITE}};
 
 // loopup an identifier to see if it is a reserved word, uses linear search
 static TokenType reservedLookup(char* s) {
-    size_t i;
-    for (i = 0; i < MAXRESERVED; ++i) {
-        // equal
-        if (!strcmp(s, reservedWords[i].str)) {
-            return reservedWords[i].tok;
+    size_t lo, hi, mid;
+    lo = 0;
+    hi = MAXRESERVED - 1;
+    while (lo <= hi) {
+        mid = lo + ((hi - lo) >> 1);
+        int result = strcmp(s, reservedWords[mid].str);
+        if (!result) {
+            return reservedWords[mid].tok;
+        } else if (result > 0){
+            lo = mid + 1;
+        } else {
+            hi = mid - 1;
         }
     }
 
