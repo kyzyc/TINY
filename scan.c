@@ -268,7 +268,6 @@ TokenType getToken() {
         if ((save) && (tokenStringIndex < tokenString.len)) {
             tokenString.str[tokenStringIndex++] = c;
         } else if ((save) && (tokenStringIndex == tokenString.len)) {
-            printf("realloc! %zu\n", tokenString.len);
             if (realloc(tokenString.str, (tokenString.len * 1.5)) == NULL) {
                 if (errno == ENOMEM) {
                     fprintf(stderr, "out of memory!\n");
@@ -276,7 +275,6 @@ TokenType getToken() {
                 }
             }
             tokenString.len *= 1.5;
-            printf("realloc! %zu\n", tokenString.len);
             tokenString.str[tokenStringIndex++] = c;
         }
         if (state == DONE) {
