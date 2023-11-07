@@ -1,12 +1,8 @@
 #ifndef _GLOBALS_H_
 #define _GLOBALS_H_
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
-#include <ctype.h>
-#include <errno.h>
+#include <stdio.h>
 
 // MAXRESERVED = the number of reserved words
 #define MAXRESERVED 8

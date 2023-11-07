@@ -1,6 +1,8 @@
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <errno.h>
 #include "scan.h"
-#include <stdio.h>
-#include "globals.h"
 #include "util.h"
 
 // states in scanner DFA

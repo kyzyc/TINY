@@ -1,3 +1,5 @@
+#include <string.h>
+#include <stdlib.h>
 #include "globals.h"
 
 #define NO_PARSE   true
