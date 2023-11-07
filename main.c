@@ -17,7 +17,7 @@
 #include "cgen.h"
 #endif
 
-size_t lineno = 0;
+size_t lineno = 1;
 FILE* source;
 FILE* listing;
 FILE* code;

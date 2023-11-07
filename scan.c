@@ -1,4 +1,5 @@
 #include "scan.h"
+#include <stdio.h>
 #include "globals.h"
 #include "util.h"
 
@@ -14,7 +15,7 @@ struct TokenString {
 } tokenString = {NULL, 0};
 
 // length of the input buffer for source code lines
-#define BUFLEN 256
+#define BUFLEN 40
 
 #define TOTAL_KEYWORDS 8
 #define MIN_WORD_LENGTH 2
@@ -31,18 +32,24 @@ static size_t bufsize = 0;    // current size of buffer string
    from lineBuf, reading in a new line if lineBuf is exhausted */
 static char getNextChar(void) {
     if (!(linepos < bufsize)) {
-        lineno++;
         if (fgets(lineBuf, BUFLEN - 1, source)) {
             if (EchoSource) {
                 fprintf(listing, "%4zu: %s", lineno, lineBuf);
             }
             bufsize = strlen(lineBuf);
             linepos = 0;
+            if (lineBuf[linepos] == '\n') {
+                lineno++;
+            }
             return lineBuf[linepos++];
         } else {
+            // lineno--;
             return EOF;
         }
     } else {
+        if (lineBuf[linepos] == '\n') {
+            lineno++;
+        }
         return lineBuf[linepos++];
     }
 }
@@ -50,6 +57,10 @@ static char getNextChar(void) {
 // ungetNextChar backtracks one character in lineBuf
 static void ungetNextChar(void)
 {
+    if (lineBuf[linepos - 1] == '\n') {
+        lineno--;
+        return;
+    }
     linepos--;
 }
 
