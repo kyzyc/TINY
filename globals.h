@@ -28,31 +28,31 @@ extern size_t lineno;     // source line number for listing
 /***************** Syntax tree for parsing *************************/
 /*******************************************************************/
 
-/* typedef enum { StmtK, ExpK } NodeKind; */
-/* typedef enum { IfK, RepeatK, AssignK, ReadK, WriteK } StmtKind; */
-/* typedef enum { OpK, ConstK, IdK } ExpKind; */
+typedef enum { StmtK, ExpK } NodeKind;
+typedef enum { IfK, RepeatK, AssignK, ReadK, WriteK } StmtKind;
+typedef enum { OpK, ConstK, IdK } ExpKind;
 
 // ExpType is used for type checking
-/* typedef enum {Void, Integer, Boolean} ExpType; */
+typedef enum {Void, Integer, Boolean} ExpType;
 
-/* #define MAXCHILDREN 3 */
+#define MAXCHILDREN 3
 
-/* typedef struct treeNode { */
-/*     struct treeNode* child[MAXCHILDREN]; */
-/*     struct treeNode* stdlib; */
-/*     int lineno; */
-/*     NodeKind NodeKind; */
-/*     union { */
-/*         StmtKind stmt; */
-/*         ExpKind exp; */
-/*     } kind; */
-/*     union { */
-/*         TokenType op; */
-/*         int val; */
-/*         char* name; */
-/*     } attr; */
-/*     ExpType type;  // for type checking of exps */
-/* } TreeNode; */
+typedef struct treeNode {
+    struct treeNode* child[MAXCHILDREN];
+    struct treeNode* sibling;
+    size_t lineno;
+    NodeKind NodeKind;
+    union {
+        StmtKind stmt;
+        ExpKind exp;
+    } kind;
+    union {
+        TokenType op;
+        int val;
+        char* name;
+    } attr;
+    ExpType type;  // for type checking of exps
+} TreeNode;
 
 /*******************************************************************/
 /*****************     Flags for tracing   *************************/
@@ -67,7 +67,13 @@ extern bool EchoSource;
    scanner */
 extern bool TraceScan;
 
-/* // Error = true, prevents further passes if an error occurs */
-/* extern int Error; */
+/* TraceParse = true, causes the syntax tree to book-keeping
+   printed to the listing file in linearized form
+   (using indents for children)
+ */
+extern bool TraceParse;
+
+// Error = true, prevents further passes if an error occurs
+extern bool Error;
 
 #endif  // !_GLOBALS_H_

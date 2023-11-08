@@ -5,6 +5,11 @@
 
 #define INITIALSIZE 8
 
+struct TokenString {
+    char* str;
+    size_t len;
+};
+
 // store the lexeme of each token (string value of token)
 extern struct TokenString tokenString;
 

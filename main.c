@@ -1,23 +1,16 @@
 #include <string.h>
 #include <stdlib.h>
 #include "globals.h"
+#include "util.h"
+#include "scan.h"
+#include "parse.h"
 
-#define NO_PARSE   true
+#define NO_PARSE   false
 #define NO_ANALYSE false
 #define NO_CODE    false
 
-#include "util.h"
-#if NO_PARSE
-#include "scan.h"
-#else
-#include "parse.h"
-#endif
-#if !NO_ANALYSE
-#include "analyze.h"
-#endif
-#if !NO_CODE
-#include "cgen.h"
-#endif
+// #include "analyze.h"
+// #include "cgen.h"
 
 size_t lineno = 1;
 FILE* source;
@@ -25,12 +18,14 @@ FILE* listing;
 FILE* code;
 
 bool EchoSource = true;
-bool TraceScan = true;
+bool TraceScan = false;
+bool TraceParse = true;
 
-// int Error = false;
+bool Error = false;
 
 int main(int argc, char *argv[])
 {
+    TreeNode* syntaxTree;
     char pgm[20];  // source code file name
     if (argc != 2) {
         fprintf(stderr, "usage: %s <filename>\n", argv[0]);
@@ -54,7 +49,13 @@ int main(int argc, char *argv[])
 #if NO_PARSE
     while (getToken() != ENDFILE)
         ;
-#endif
+#else
+    syntaxTree = parse();
+    if (TraceParse) {
+        fprintf(listing, "\nSyntax tree: \n");
+        printTree(syntaxTree);
+    }
     return 0;
+#endif
 }
 

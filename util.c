@@ -1,4 +1,6 @@
 #include "util.h"
+#include <stdlib.h>
+#include <string.h>
 
 void printToken(TokenType token, const char* tokenString) {
     switch (token) {
@@ -57,4 +59,126 @@ void printToken(TokenType token, const char* tokenString) {
         default:
             fprintf(listing, "Unknown token: %d\n", token);
     }
+}
+
+/* Function newStmtNode creates a new statement
+   node for syntax tree construction
+*/
+TreeNode* newStmtNode(StmtKind kind) {
+    TreeNode* t = (TreeNode*)malloc(sizeof(TreeNode));
+    int i;
+    if (t == NULL) {
+        fprintf(listing, "Out of memory error at line %zu\n", lineno);
+    } else {
+        for (i = 0; i < MAXCHILDREN; ++i) 
+            t->child[i] = NULL;
+        t->sibling = NULL;
+        t->NodeKind = StmtK;
+        t->kind.stmt = kind;
+        t->lineno = lineno;
+    }
+    return t;
+}
+
+/* Function newExpNode creates a new expression
+   node for syntax tree construction
+*/
+TreeNode* newExpNode(ExpKind kind) {
+    TreeNode* t = (TreeNode*)malloc(sizeof(TreeNode));
+    int i;
+    if (t == NULL) {
+        fprintf(listing, "Out of memory error at line %zu\n", lineno);
+    } else {
+        for (i = 0; i < MAXCHILDREN; ++i)
+            t->child[i] = NULL;
+        t->sibling = NULL;
+        t->NodeKind = ExpK;
+        t->kind.exp = kind;
+        t->lineno = lineno;
+        t->type = Void;
+    }
+    return t;
+}
+
+char* copyString(char* s) {
+    int n;
+    char* t;
+    if (s == NULL)
+        return NULL;
+    n = strlen(s) + 1;
+    t = (char*)malloc(n);
+    if (t == NULL)
+        fprintf(listing, "Out of memory error at line %zu\n", lineno);
+    else 
+        strcpy(t, s);
+    return t;
+}
+
+// variable indentno is used by printTree to store current 
+// number of spaces to indent
+static int indentno = 0;
+
+// macros to increase/decrease indentation
+#define INDENT (indentno += 2)
+#define UNINDENT (indentno -= 2)
+
+// printSpaces indents by printing spaces
+static void printSpaces() {
+    int i;
+    for (i = 0; i < indentno; ++i) {
+        fprintf(listing, " ");
+    }
+}
+
+void printTree(TreeNode* tree) {
+    int i;
+    INDENT;
+    while (tree != NULL) {
+        printSpaces();
+        if (tree->NodeKind == StmtK) {
+            switch (tree->kind.stmt) {
+                case IfK:
+                    fprintf(listing, "If\n");
+                    break;
+                case RepeatK:
+                    fprintf(listing, "Repeat\n");
+                    break;
+                case AssignK:
+                    fprintf(listing, "Assign\n");
+                    break;
+                case ReadK:
+                    fprintf(listing, "Read\n");
+                    break;
+                case WriteK:
+                    fprintf(listing, "Write\n");
+                    break;
+                default:
+                    fprintf(listing, "Unknown ExpNode kind\n");
+                    break;
+            }
+        } else if (tree->NodeKind == ExpK) {
+            switch (tree->kind.exp) {
+                case OpK:
+                    fprintf(listing, "Op: ");
+                    printToken(tree->attr.op, "\0");
+                    break;
+                case ConstK:
+                    fprintf(listing, "const: %d\n", tree->attr.val);
+                    break;
+                case IdK:
+                    fprintf(listing, "Id: %s\n", tree->attr.name);
+                    break;
+                default:
+                    fprintf(listing, "Unknown ExpNode kind\n");
+                    break;
+            } 
+        } else {
+            fprintf(listing, "Unknown node kind\n");
+        }
+        for (int i = 0; i < MAXCHILDREN; ++i) {
+            printTree(tree->child[i]);
+        }
+        tree = tree->sibling;
+    }
+    UNINDENT;
 }

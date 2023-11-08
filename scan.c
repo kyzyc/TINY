@@ -11,13 +11,10 @@ typedef enum {
 } StateType;
 
 // lexeme of identifier or reserved word
-struct TokenString {
-    char* str;
-    size_t len;
-} tokenString = {NULL, 0};
+struct TokenString tokenString = {NULL, 0};
 
 // length of the input buffer for source code lines
-#define BUFLEN 40
+#define BUFLEN 256
 
 #define TOTAL_KEYWORDS 8
 #define MIN_WORD_LENGTH 2

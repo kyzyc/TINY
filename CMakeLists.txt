@@ -11,10 +11,12 @@ set (SOURCES
      main.c
      util.c
      scan.c
+     parse.c
 )
 set (HEADERS
      util.h
      scan.h
+     parse.h
      globals.h
 )
 add_executable(tiny ${HEADERS} ${SOURCES})
