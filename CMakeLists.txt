@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 2.6.0)
+cmake_minimum_required(VERSION 3.5.0)
 
 project(TINY)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_subdirectory(lex)
-add_subdirectory(exercises)
+# add_subdirectory(lex)
+# add_subdirectory(exercises)
 # add_executable(tiny scan.c main.c util.c)
 set (SOURCES
      main.c
