@@ -5,7 +5,7 @@
 #include "scan.h"
 #include "parse.h"
 
-#define NO_PARSE   true
+#define NO_PARSE   false
 #define NO_ANALYSE false
 #define NO_CODE    false
 
