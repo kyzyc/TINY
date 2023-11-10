@@ -8,6 +8,9 @@ analyze.h
 cgen.h
 *.json
 *.o
+tiny
+!.vscode/tasks.json
+!.vscode/launch.json
 !./*.c
 !*/*.h
 !*/*.l

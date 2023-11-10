@@ -32,14 +32,14 @@ static size_t bufsize = 0;    // current size of buffer string
 static char getNextChar(void) {
     if (!(linepos < bufsize)) {
         if (fgets(lineBuf, BUFLEN - 1, source)) {
+            if (lineBuf[linepos] == '\n') {
+                lineno++;
+            }
             if (EchoSource) {
                 fprintf(listing, "%4zu: %s", lineno, lineBuf);
             }
             bufsize = strlen(lineBuf);
             linepos = 0;
-            if (lineBuf[linepos] == '\n') {
-                lineno++;
-            }
             return lineBuf[linepos++];
         } else {
             // lineno--;
@@ -58,6 +58,7 @@ static void ungetNextChar(void)
 {
     if (lineBuf[linepos - 1] == '\n') {
         lineno--;
+        linepos--;
         return;
     }
     linepos--;

@@ -5,7 +5,7 @@
 #include "scan.h"
 #include "parse.h"
 
-#define NO_PARSE   false
+#define NO_PARSE   true
 #define NO_ANALYSE false
 #define NO_CODE    false
 
@@ -13,6 +13,7 @@
 // #include "cgen.h"
 
 size_t lineno = 1;
+
 FILE* source;
 FILE* listing;
 FILE* code;
@@ -23,8 +24,7 @@ bool TraceParse = true;
 
 bool Error = false;
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     TreeNode* syntaxTree;
     char pgm[20];  // source code file name
     if (argc != 2) {
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
     strcpy(pgm, argv[1]);
-    if (strchr(pgm, '.') == NULL) {
+    if (strchr(pgm, '.tny') == NULL) {
         strcat(pgm, ".tny");
     }
     source = fopen(pgm, "r");
