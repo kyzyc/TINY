@@ -12,6 +12,7 @@ tiny
 !.vscode/tasks.json
 !.vscode/launch.json
 !./*.c
+!ch4/*.c
 !*/*.h
 !*/*.l
 !*/*.tny

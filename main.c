@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     strcpy(pgm, argv[1]);
-    if (strchr(pgm, '.tny') == NULL) {
+    if (strstr(pgm, ".tny") == NULL) {
         strcat(pgm, ".tny");
     }
     source = fopen(pgm, "r");
