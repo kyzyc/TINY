@@ -9,9 +9,6 @@
 #define NO_ANALYSE false
 #define NO_CODE    false
 
-// #include "analyze.h"
-// #include "cgen.h"
-
 size_t lineno = 1;
 
 FILE* source;

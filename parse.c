@@ -51,6 +51,8 @@ TreeNode* stmt_sequence() {
                 p = q;
             }
         }
+        // p->sibling = q;
+        // p = q;
     }
     return t;
 }
